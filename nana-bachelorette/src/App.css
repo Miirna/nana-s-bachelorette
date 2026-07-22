@@ -1,119 +1,434 @@
-body {
-  background-color: #0d0221;
-  color: #ffffff;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  padding: 20px;
-}
+/* ===============================================
+   ESTILOS PRINCIPALES - NANA'S BACHELORETTE
+   =============================================== */
 
+/* Fondo general y centrado */
 .app-container {
-  max-width: 500px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.header {
-  text-align: center;
-}
-
-.neon-title {
-  font-size: 2rem;
-  color: #fff;
-  text-shadow: 0 0 10px #ff007f, 0 0 20px #ff007f, 0 0 40px #ff007f;
-  margin: 10px 0 5px 0;
-}
-
-.subtitle {
-  color: #00f3ff;
-  font-size: 0.9rem;
-}
-
-.card-neon {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid #ff007f;
-  box-shadow: 0 0 15px rgba(255, 0, 127, 0.2);
-  border-radius: 16px;
-  padding: 20px;
-  backdrop-filter: blur(5px);
-}
-
-.card-neon h2 {
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 0;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-input {
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid #00f3ff;
-  border-radius: 8px;
-  padding: 12px;
-  color: #fff;
-  outline: none;
-}
-
-input:focus {
-  box-shadow: 0 0 10px #00f3ff;
-}
-
-.btn-primary, .btn-ruleta {
-  background: linear-gradient(45deg, #ff007f, #7928ca);
-  color: white;
-  border: none;
-  padding: 14px;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: transform 0.2s;
-}
-
-.btn-ruleta {
-  background: linear-gradient(45deg, #ffe600, #ff007f);
-  color: #000;
+  min-height: 100vh;
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at top, #1a021a, #050008);
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
 }
 
-.btn-primary:active, .btn-ruleta:active {
-  transform: scale(0.98);
+/* ===============================================
+   TARJETA PRINCIPAL (GLASSMORPHISM)
+   =============================================== */
+.card-form, .lineup-card {
+  width: 100%;
+  max-width: 480px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 51, 168, 0.3);
+  border-radius: 28px;
+  padding: 35px 25px;
+  box-shadow: 0 8px 32px 0 rgba(255, 0, 128, 0.25),
+              inset 0 0 15px rgba(255, 51, 168, 0.15);
+  box-sizing: border-box;
 }
 
-.winner-box {
-  margin-top: 15px;
-  background: rgba(0, 243, 255, 0.1);
-  border: 2px dashed #00f3ff;
-  border-radius: 12px;
-  padding: 15px;
-  text-align: center;
-}
+/* ===============================================
+   TÍTULOS Y CABECERAS EXTREMADAMENTE GRANDES
+   =============================================== */
 
-.winner-name {
-  font-size: 1.8rem;
-  color: #ffe600;
-  margin: 5px 0;
-}
-
-.playlist {
-  list-style: none;
-  padding: 0;
+.lineup-header h2 {
+  font-size: 1.9rem; /* Título del Line-up muy marcado */
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 0 12px rgba(255, 51, 168, 0.8);
   margin: 0;
 }
 
-.playlist-item {
-  padding: 10px 0;
+.lineup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.playlist-item span {
+.lineup-badge {
+  background: linear-gradient(135deg, #ff33a8, #7928ca);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 6px 14px;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(255, 51, 168, 0.5);
+  white-space: nowrap;
+}
+
+/* ===============================================
+   LISTA Y SCROLLABLE LINE-UP
+   =============================================== */
+.lineup-scroll-container {
+  max-height: 420px; /* Controla la altura del scroll */
+  overflow-y: auto;
+  padding-right: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Estilo para la barra de Scroll neón */
+.lineup-scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+.lineup-scroll-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+.lineup-scroll-container::-webkit-scrollbar-thumb {
+  background: #ff33a8;
+  border-radius: 10px;
+  box-shadow: 0 0 8px #ff33a8;
+}
+
+/* Filas individuales del Line-up */
+.lineup-item {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 14px 16px;
+  border-radius: 18px;
+  transition: all 0.3s ease;
+}
+
+.lineup-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(0, 243, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Números del Line-up (01, 02, 03...) */
+.lineup-number {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #00f3ff; /* Turquesa neón */
+  text-shadow: 0 0 8px #00f3ff;
+  margin-right: 16px;
+  min-width: 30px;
+}
+
+/* Nombre de la invitada y detalles */
+.lineup-info {
+  flex-grow: 1;
+}
+
+.guest-name {
+  color: #ffffff;
+  font-size: 1.25rem; /* Nombre de la invitada bien destacado */
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.song-details {
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.song-title {
+  color: #ff33a8; /* Canción en rosa neón */
+  font-weight: 700;
+}
+
+.dot {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.artist-name {
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+}
+
+/* Botón de eliminar */
+.delete-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.delete-btn:hover {
+  color: #ff4d4d;
+  background: rgba(255, 77, 77, 0.15);
+}
+
+/* ===============================================
+   FORMULARIO E INPUTS
+   =============================================== */
+.subtitle {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
+  margin-bottom: 25px;
+  line-height: 1.4;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.input-field label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
   color: #00f3ff;
+  margin-bottom: 6px;
+}
+
+.input-field input {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.input-field input:focus {
+  border-color: #ff33a8;
+  box-shadow: 0 0 12px rgba(255, 51, 168, 0.4);
+}
+
+.btn-submit {
+  margin-top: 10px;
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #ff33a8, #7928ca);
+  border: none;
+  border-radius: 16px;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 0 20px rgba(255, 51, 168, 0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(255, 51, 168, 0.8);
+}
+
+.main-card {
+  width: 100%;
+  max-width: 480px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 51, 168, 0.3);
+  border-radius: 28px;
+  padding: 25px;
+  box-shadow: 0 8px 32px 0 rgba(255, 0, 128, 0.25);
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Selector de Tabs */
+.tabs-container {
+  display: flex;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 16px;
+  padding: 5px;
+  margin-bottom: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tab-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 10px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, #ff33a8, #7928ca);
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(255, 51, 168, 0.5);
+}
+
+.empty-msg {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 30px 0;
+  font-style: italic;
+}
+
+.app-header-logo {
+  text-align: center;
+  margin-bottom: 22px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed rgba(255, 51, 168, 0.25);
+}
+
+.main-title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  line-height: 1.15;
+  color: #ffffff;
+  text-shadow: 0 0 10px #ff33a8, 0 0 22px #ff33a8, 0 0 35px #ff33a8;
+  margin: 0 0 8px 0;
+}
+
+.logo-tagline {
+  color: #00f3ff; /* Cían neón para destacar el slogan */
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: capitalize;
+  text-shadow: 0 0 8px rgba(0, 243, 255, 0.6);
+  margin: 0;
+}
+
+.disco-ball-bg {
+  position: absolute;
+  top: -20px;
+  left: -30px; /* La posiciona ligeramente a la izquierda como tu ejemplo */
+  width: 350px;
+  height: 350px;
+  opacity: 0.22; /* Transparencia tenue para no obstruir la lectura */
+  pointer-events: none; /* No interfiere con los clics */
+  z-index: 0;
+  filter: drop-shadow(0 0 12px #ff33a8);
+  transform: rotate(-10deg);
+}
+
+/* Mantener el contenido por encima del fondo */
+.app-header-logo,
+.tabs-container,
+.tab-content {
+  position: relative;
+  z-index: 2;
+}
+
+.toast-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Asegura que esté por encima de absolutamente todo */
+  padding: 20px;
+  box-sizing: border-box;
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.toast-card {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  background: #0d0118;
+  border: 2px solid #ff33a8;
+  border-radius: 24px;
+  padding: 30px 20px;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(255, 51, 168, 0.6),
+              inset 0 0 15px rgba(255, 51, 168, 0.2);
+  animation: scaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.toast-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.toast-close:hover {
+  color: #ffffff;
+  background: rgba(255, 51, 168, 0.2);
+}
+
+.toast-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+  filter: drop-shadow(0 0 10px #ff33a8);
+}
+
+.toast-card h3 {
+  color: #ffffff;
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin: 0 0 8px 0;
+  text-shadow: 0 0 8px rgba(255, 51, 168, 0.8);
+}
+
+.toast-card p {
+  color: #00f3ff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0;
+  text-shadow: 0 0 5px rgba(0, 243, 255, 0.5);
+}
+
+/* Animaciones para la entrada suave del Popup */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
