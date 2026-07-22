@@ -122,7 +122,7 @@ function ConfirmationForm() {
         <div className="app-header-logo">
           <h1 className="main-title">✨ Nana's Bachelorette ✨</h1>
           <p className="logo-tagline">
-            Girls Just Want to Have Fun & Sing Karaoke 🪩🎤
+            Girls Just Want to Have Fun & Sing Karaoke
           </p>
         </div>
 
