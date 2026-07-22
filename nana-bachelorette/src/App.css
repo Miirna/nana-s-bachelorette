@@ -36,8 +36,8 @@
    TÍTULOS Y CABECERAS EXTREMADAMENTE GRANDES
    =============================================== */
 
-.lineup-header h2 {
-  font-size: 1.9rem; /* Título del Line-up muy marcado */
+.lineup-header h3 {
+  font-size: 1.5rem; /* Título del Line-up muy marcado */
   font-weight: 800;
   color: #ffffff;
   text-transform: uppercase;

@@ -120,7 +120,7 @@ function ConfirmationForm() {
         
         {/* LOGO / ENCABEZADO PRINCIPAL */}
         <div className="app-header-logo">
-          <h1 className="main-title">✨ Nana's Bachelorette ✨</h1>
+          <h1 className="main-title">Nana's Bachelorette</h1>
           <p className="logo-tagline">
             Girls Just Want to Have Fun & Sing Karaoke
           </p>
@@ -196,7 +196,7 @@ function ConfirmationForm() {
         {tabActiva === 'lineup' && (
           <div className="tab-content">
             <div className="lineup-header">
-              <h2>🎵 Line-up de la Noche</h2>
+              <h3> Line-up de la Noche</h3>
             </div>
 
             {listaCanciones.length === 0 ? (
