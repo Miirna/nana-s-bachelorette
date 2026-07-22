@@ -220,13 +220,13 @@ function ConfirmationForm() {
                         )}
                       </div>
                     </div>
-                    <button 
+                    {/*<button 
                       className="delete-btn" 
                       onClick={() => handleDelete(item.id)}
                       title="Eliminar"
                     >
                       <Trash2 size={18} />
-                    </button>
+                    </button>*/}
                   </div>
                 ))}
               </div>
