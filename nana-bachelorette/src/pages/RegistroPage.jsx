@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { db } from '../firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import confetti from 'canvas-confetti';
 import {
-  Sparkles, CheckCircle2, X, HeartCrack, PartyPopper, Trash2, ShieldCheck, LogOut,
+  Sparkles, CheckCircle2, X, HeartCrack, Trash2, ShieldCheck, LogOut,
   Mic, Heart, CalendarDays, MapPin, Music2, ArrowLeft
 } from 'lucide-react';
 import { useInvitadas } from '../hooks/useInvitadas';
@@ -24,7 +23,7 @@ function RegistroPage() {
 
   const [invitadaId, setInvitadaId] = useState('');
   const [respuestaAsistencia, setRespuestaAsistencia] = useState(null); // null | true | false
-  const [paso, setPaso] = useState('bienvenida'); // bienvenida | asistencia | correo | verificacion | cancion | perfil | declinado | completado
+  const [paso, setPaso] = useState('bienvenida'); // bienvenida | asistencia | correo | confirmarCorreo | verificacion | cancion | perfil | declinado
   const [confirmando, setConfirmando] = useState(false);
 
   const [correoIngresado, setCorreoIngresado] = useState('');
@@ -39,7 +38,6 @@ function RegistroPage() {
   const [mostrarToast, setMostrarToast] = useState(false);
   const [toastInfo, setToastInfo] = useState({ titulo: '', mensaje: '' });
   const [mostrarModalCancion, setMostrarModalCancion] = useState(false);
-  const [resumenCancion, setResumenCancion] = useState(null); // { cancion, artista }
 
   const invitadasOrdenadas = useMemo(
     () => [...invitadas].sort((a, b) => a.nombre.localeCompare(b.nombre, 'es')),
@@ -97,9 +95,9 @@ function RegistroPage() {
     }
   };
 
-  // Paso 1 -> si ya confirmó, le reenviamos el código a su correo para dejarla entrar a su perfil;
+  // Paso 1 -> si ya confirmó, primero le preguntamos si su correo sigue siendo correcto;
   // si no ha confirmado, pasa al paso de asistencia
-  const handleSiguientePaso1 = async () => {
+  const handleSiguientePaso1 = () => {
     if (!invitadaId || !invitadaSeleccionada) return;
 
     if (!yaConfirmada) {
@@ -108,13 +106,13 @@ function RegistroPage() {
     }
 
     if (!invitadaSeleccionada.email) {
-      setErrorEnvio('No tenemos un correo registrado para verificarte. Contacta a la organizadora.');
+      setCorreoIngresado('');
+      setErrorEnvio('');
+      setPaso('correo');
       return;
     }
 
-    setCorreoIngresado(invitadaSeleccionada.email);
-    const ok = await enviarCodigoA(invitadaSeleccionada.email);
-    if (ok) setPaso('verificacion');
+    setPaso('confirmarCorreo');
   };
 
   // Paso 2 -> si dice que no, declina de una vez; si dice que sí, pedimos su correo antes de confirmar
@@ -138,16 +136,53 @@ function RegistroPage() {
       return;
     }
 
-    setCorreoIngresado(invitadaSeleccionada?.email || '');
+    setCorreoIngresado('');
     setErrorEnvio('');
     setPaso('correo');
   };
 
-  // Paso "correo" -> guarda el correo y manda el código de verificación
-  const handleEnviarCodigo = async () => {
-    if (!correoIngresado.trim()) return;
-    const ok = await enviarCodigoA(correoIngresado.trim());
+  // Paso "confirmarCorreo" -> valida si el correo ya guardado sigue siendo el correcto
+  const handleCorreoEsCorrecto = async () => {
+    if (!invitadaSeleccionada?.email) return;
+    const ok = await enviarCodigoA(invitadaSeleccionada.email);
     if (ok) setPaso('verificacion');
+  };
+
+  const handleCorreoNoEsCorrecto = () => {
+    setCorreoIngresado('');
+    setErrorEnvio('');
+    setPaso('correo');
+  };
+
+  // Paso "correo" -> primera vez: solo se guarda el correo y se confirma la asistencia (sin código).
+  // Corrigiendo correo (ya confirmada): se guarda el nuevo correo y AHÍ sí se manda el código.
+  const handleContinuarCorreo = async () => {
+    if (!invitadaId || !correoIngresado.trim()) return;
+    const correo = correoIngresado.trim().toLowerCase();
+
+    if (yaConfirmada) {
+      const ok = await enviarCodigoA(correo);
+      if (ok) setPaso('verificacion');
+      return;
+    }
+
+    setErrorEnvio('');
+    setConfirmando(true);
+    try {
+      await updateDoc(doc(db, "invitadas", invitadaId), {
+        email: correo,
+        confirmada: true,
+        fechaConfirmacion: serverTimestamp()
+      });
+      notificarConfirmacionANovia({ nombreInvitada: invitadaSeleccionada.nombre })
+        .catch((error) => console.error("No se pudo notificar a la novia:", error));
+      setPaso('cancion');
+    } catch (error) {
+      console.error("Error al confirmar asistencia:", error);
+      setErrorEnvio('Hubo un detalle al guardar tu correo. Intenta de nuevo.');
+    } finally {
+      setConfirmando(false);
+    }
   };
 
   // Botón "Reenviar código" dentro del paso de verificación -> reusa el correo ya en curso
@@ -155,8 +190,8 @@ function RegistroPage() {
     enviarCodigoA(correoIngresado);
   };
 
-  // Paso "verificacion" -> si el código es correcto, ahí sí confirmamos la asistencia
-  const handleVerificarCodigo = async () => {
+  // Paso "verificacion" -> solo se llega aquí ya estando confirmada; si el código es correcto, entra a su perfil
+  const handleVerificarCodigo = () => {
     if (!invitadaSeleccionada) return;
     const vigente = invitadaSeleccionada.codigoExpira && Date.now() < invitadaSeleccionada.codigoExpira;
 
@@ -166,28 +201,7 @@ function RegistroPage() {
     }
 
     setErrorCodigo('');
-
-    // Ya estaba confirmada de antes: solo la dejamos entrar a su perfil, sin re-notificar a la novia
-    if (yaConfirmada) {
-      setPaso('perfil');
-      return;
-    }
-
-    setConfirmando(true);
-    try {
-      await updateDoc(doc(db, "invitadas", invitadaId), {
-        confirmada: true,
-        fechaConfirmacion: serverTimestamp()
-      });
-      notificarConfirmacionANovia({ nombreInvitada: invitadaSeleccionada.nombre })
-        .catch((error) => console.error("No se pudo notificar a la novia:", error));
-      setPaso('cancion');
-    } catch (error) {
-      console.error("Error al confirmar asistencia:", error);
-      alert("Hubo un detalle al confirmar tu asistencia.");
-    } finally {
-      setConfirmando(false);
-    }
+    setPaso('perfil');
   };
 
   const handleEliminarCancion = async (id) => {
@@ -214,15 +228,15 @@ function RegistroPage() {
   };
 
   const handleAtras = () => {
-    if (paso === 'correo') setPaso('asistencia');
-    else if (paso === 'verificacion') setPaso(yaConfirmada ? 'bienvenida' : 'correo');
+    if (paso === 'correo') setPaso(yaConfirmada ? 'confirmarCorreo' : 'asistencia');
+    else if (paso === 'verificacion') setPaso('confirmarCorreo');
+    else if (paso === 'confirmarCorreo') setPaso('bienvenida');
     else if (paso === 'asistencia') setPaso('bienvenida');
     else if (paso === 'cancion') setPaso('bienvenida');
-    else if (paso === 'declinado' || paso === 'completado' || paso === 'perfil') {
+    else if (paso === 'declinado' || paso === 'perfil') {
       setPaso('bienvenida');
       setInvitadaId('');
       setRespuestaAsistencia(null);
-      setResumenCancion(null);
       setCodigoIngresado('');
       setErrorCodigo('');
       setCorreoIngresado('');
@@ -264,13 +278,12 @@ function RegistroPage() {
       confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
 
       if (paso === 'cancion') {
-        // Primera canción, como parte de la confirmación inicial de asistencia
+        // Primera canción, como parte de la confirmación inicial de asistencia -> directo a su perfil
         setToastInfo({
           titulo: '¡Todo confirmado!',
           mensaje: 'Tu asistencia y tu rola ya quedaron en el line-up 💕'
         });
-        setResumenCancion({ cancion: nuevaConfirmacion.cancion, artista: nuevaConfirmacion.artista });
-        setPaso('completado');
+        setPaso('perfil');
       } else {
         // Ya estaba confirmada, solo está agregando una canción más desde su perfil
         setToastInfo({
@@ -421,15 +434,13 @@ function RegistroPage() {
                 </div>
               )}
 
-              {errorEnvio && <p className="kawaii-error-msg">{errorEnvio}</p>}
-
               <button
                 type="button"
                 className="kawaii-cta"
                 onClick={handleSiguientePaso1}
-                disabled={!invitadaId || enviandoCodigo}
+                disabled={!invitadaId}
               >
-                {enviandoCodigo ? 'Enviando código...' : (yaConfirmada ? 'Continuar' : 'Siguiente')} <Sparkles size={16} />
+                {yaConfirmada ? 'Continuar' : 'Siguiente'} <Sparkles size={16} />
               </button>
             </div>
           )}
@@ -475,11 +486,50 @@ function RegistroPage() {
             </div>
           )}
 
+          {paso === 'confirmarCorreo' && invitadaSeleccionada && (
+            <div className="kawaii-form-group">
+              <div className="kawaii-icon-badge">
+                <ShieldCheck size={28} />
+              </div>
+              <h2 className="kawaii-step-title">¿Sigue siendo tu correo? <Sparkles size={16} /></h2>
+              <p className="kawaii-step-subtitle">
+                Tenemos registrado: <strong>{invitadaSeleccionada.email}</strong>
+              </p>
+
+              <div className="kawaii-attendance-toggle">
+                <button
+                  type="button"
+                  className="kawaii-toggle-btn"
+                  onClick={handleCorreoEsCorrecto}
+                  disabled={enviandoCodigo}
+                >
+                  {enviandoCodigo ? 'Enviando código...' : 'Sí, es correcto'}
+                </button>
+                <button
+                  type="button"
+                  className="kawaii-toggle-btn"
+                  onClick={handleCorreoNoEsCorrecto}
+                  disabled={enviandoCodigo}
+                >
+                  No, quiero cambiarlo
+                </button>
+              </div>
+
+              {errorEnvio && <p className="kawaii-error-msg">{errorEnvio}</p>}
+
+              <button type="button" className="kawaii-back-link" onClick={handleAtras}>
+                <ArrowLeft size={14} /> Atrás
+              </button>
+            </div>
+          )}
+
           {paso === 'correo' && invitadaSeleccionada && (
             <div className="kawaii-form-group">
               <h2 className="kawaii-step-title">¿Cuál es tu correo? <Sparkles size={16} /></h2>
               <p className="kawaii-step-subtitle">
-                Lo usaremos para mandarte un código y confirmar tu lugar en la fiesta.
+                {yaConfirmada
+                  ? 'Escribe el correo correcto para mandarte un código y dejarte entrar a tu perfil.'
+                  : 'Lo guardaremos junto con tu confirmación de asistencia.'}
               </p>
 
               <div className="kawaii-field">
@@ -499,10 +549,14 @@ function RegistroPage() {
               <button
                 type="button"
                 className="kawaii-cta"
-                onClick={handleEnviarCodigo}
-                disabled={!correoIngresado.trim() || enviandoCodigo}
+                onClick={handleContinuarCorreo}
+                disabled={!correoIngresado.trim() || enviandoCodigo || confirmando}
               >
-                {enviandoCodigo ? 'Enviando código...' : 'Enviar código'} <Sparkles size={16} />
+                {enviandoCodigo
+                  ? 'Enviando código...'
+                  : confirmando
+                    ? 'Confirmando...'
+                    : (yaConfirmada ? 'Enviar código' : 'Confirmar asistencia')} <Sparkles size={16} />
               </button>
 
               <button type="button" className="kawaii-back-link" onClick={handleAtras}>
@@ -518,8 +572,7 @@ function RegistroPage() {
               </div>
               <h2 className="kawaii-step-title">Verifica tu correo <Sparkles size={16} /></h2>
               <p className="kawaii-step-subtitle">
-                Te enviamos un código a {correoIngresado}. Escríbelo aquí para
-                {yaConfirmada ? ' entrar a tu perfil.' : ' confirmar tu asistencia.'}
+                Te enviamos un código a {correoIngresado}. Escríbelo aquí para entrar a tu perfil.
               </p>
 
               <div className="kawaii-field">
@@ -540,9 +593,9 @@ function RegistroPage() {
                 type="button"
                 className="kawaii-cta"
                 onClick={handleVerificarCodigo}
-                disabled={!codigoIngresado.trim() || confirmando}
+                disabled={!codigoIngresado.trim()}
               >
-                {confirmando ? 'Confirmando...' : (yaConfirmada ? 'Verificar y entrar' : 'Verificar y confirmar')} <Sparkles size={16} />
+                Verificar y entrar <Sparkles size={16} />
               </button>
 
               <button
@@ -677,31 +730,6 @@ function RegistroPage() {
             </div>
           )}
 
-          {paso === 'completado' && invitadaSeleccionada && (
-            <div className="kawaii-form-group">
-              <div className="kawaii-icon-badge kawaii-icon-badge-success">
-                <PartyPopper size={30} />
-              </div>
-              <h2 className="kawaii-step-title">¡Todo listo, {invitadaSeleccionada.nombre}! <Sparkles size={16} /></h2>
-              <p className="kawaii-step-subtitle">
-                Ya confirmamos tu asistencia
-                {resumenCancion && (
-                  <> y tu rola <strong>“{resumenCancion.cancion}”</strong>
-                    {resumenCancion.artista !== 'Artista no especificado' && ` de ${resumenCancion.artista}`}
-                  </>
-                )}
-                . ¡Nos vemos en el karaoke! 💕🎤
-              </p>
-
-              <Link to="/lineup" className="kawaii-cta">
-                Ver el Line-up <Music2 size={16} />
-              </Link>
-
-              <button type="button" className="kawaii-back-link" onClick={handleAtras}>
-                <ArrowLeft size={14} /> Volver al inicio
-              </button>
-            </div>
-          )}
         </div>
 
         {paso === 'bienvenida' && (
