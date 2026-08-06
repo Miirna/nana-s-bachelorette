@@ -432,12 +432,13 @@ html, body, #root {
 
 .add-invitada-form {
   display: flex;
+  flex-direction: column;
   gap: 10px;
   margin-bottom: 18px;
 }
 
 .add-invitada-form input {
-  flex: 1;
+  width: 100%;
   padding: 12px 14px;
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -445,6 +446,7 @@ html, body, #root {
   color: #fff;
   font-size: 0.95rem;
   outline: none;
+  box-sizing: border-box;
 }
 
 .add-invitada-form input:focus {
@@ -457,7 +459,7 @@ html, body, #root {
   color: #050008;
   border: none;
   border-radius: 12px;
-  padding: 0 16px;
+  padding: 12px 16px;
   font-weight: 800;
   cursor: pointer;
 }
@@ -598,6 +600,33 @@ html, body, #root {
   margin: 0;
 }
 
+.kawaii-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(91, 58, 86, 0.4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9998;
+  padding: 20px;
+  box-sizing: border-box;
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+.kawaii-modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  background: #fff9fc;
+  border: 1px solid rgba(255, 143, 199, 0.35);
+  border-radius: 24px;
+  padding: 32px 24px;
+  box-shadow: 0 20px 45px rgba(185, 130, 200, 0.35);
+  animation: scaleUp 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
 /* ===============================================
    TEMA KAWAII — PANTALLA DE BIENVENIDA / RSVP
    =============================================== */
@@ -689,6 +718,28 @@ html, body, #root {
   transform: translateY(-2px) scale(1.05);
 }
 
+.kawaii-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--kawaii-text-soft);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.kawaii-logout-btn:hover {
+  color: #e0507a;
+  background: rgba(224, 80, 122, 0.15);
+  transform: translateY(-2px);
+}
+
 .kawaii-main {
   position: relative;
   z-index: 1;
@@ -704,7 +755,7 @@ html, body, #root {
 
 .kawaii-card {
   position: relative;
-  z-index: 2;
+  z-index: 5;
   width: 100%;
   max-width: 460px;
   background: var(--kawaii-card-bg);
@@ -722,6 +773,10 @@ html, body, #root {
   gap: 6px;
 }
 
+.kawaii-card-wide {
+  max-width: 680px;
+}
+
 .kawaii-icon-badge {
   display: flex;
   align-items: center;
@@ -733,6 +788,11 @@ html, body, #root {
   color: #fff;
   background: linear-gradient(135deg, var(--kawaii-pink), var(--kawaii-lavender));
   box-shadow: 0 8px 20px rgba(255, 143, 199, 0.45);
+}
+
+.kawaii-icon-badge-success {
+  background: linear-gradient(135deg, var(--kawaii-mint), var(--kawaii-blue));
+  box-shadow: 0 8px 20px rgba(168, 230, 201, 0.5);
 }
 
 .kawaii-title {
@@ -773,6 +833,8 @@ html, body, #root {
   font-size: 1rem;
   font-weight: 800;
   cursor: pointer;
+  text-decoration: none;
+  box-sizing: border-box;
   background: linear-gradient(135deg, var(--kawaii-pink), #d79bf0);
   box-shadow: 0 10px 24px rgba(255, 143, 199, 0.45);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -912,6 +974,13 @@ html, body, #root {
   border-radius: 8px;
 }
 
+.kawaii-error-msg {
+  color: #d16b6b;
+  font-size: 0.85rem;
+  text-align: center;
+  margin: 0;
+}
+
 .kawaii-empty-msg {
   color: var(--kawaii-text-soft);
   font-size: 0.9rem;
@@ -990,6 +1059,12 @@ html, body, #root {
   color: var(--kawaii-pink);
 }
 
+.kawaii-declined small {
+  color: var(--kawaii-text-soft);
+  opacity: 0.75;
+  font-style: italic;
+}
+
 /* ---- Stepper (Paso X de 3) ---- */
 .kawaii-stepper {
   width: 100%;
@@ -1060,9 +1135,7 @@ html, body, #root {
   background: rgba(255, 255, 255, 0.7);
   border: 1px solid rgba(255, 143, 199, 0.35);
   border-radius: 14px;
-  cursor: pointer;
-  font-size: 1rem;
-  text-align: left;
+  box-sizing: border-box;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -1076,21 +1149,22 @@ html, body, #root {
   flex-shrink: 0;
 }
 
-.kawaii-combobox-value {
+.kawaii-combobox-input {
   flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
   color: var(--kawaii-text);
+  font-family: inherit;
+  font-size: 1rem;
   font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  padding: 0;
 }
 
-.kawaii-combobox-placeholder {
-  flex: 1;
+.kawaii-combobox-input::placeholder {
   color: var(--kawaii-text-soft);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-weight: 400;
 }
 
 .kawaii-combobox-chevron {
@@ -1127,18 +1201,6 @@ html, body, #root {
   opacity: 1;
   transform: translateY(0) scale(1);
   pointer-events: auto;
-}
-
-.kawaii-combobox-search {
-  width: 100%;
-  padding: 12px 14px;
-  border: none;
-  border-bottom: 1px solid rgba(255, 143, 199, 0.2);
-  outline: none;
-  font-size: 0.9rem;
-  color: var(--kawaii-text);
-  box-sizing: border-box;
-  background: rgba(255, 214, 232, 0.15);
 }
 
 .kawaii-combobox-list {
@@ -1215,6 +1277,207 @@ html, body, #root {
   box-shadow: 0 8px 18px rgba(255, 143, 199, 0.4);
 }
 
+.kawaii-mis-canciones {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.kawaii-mi-cancion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 143, 199, 0.25);
+}
+
+.kawaii-mi-cancion-titulo {
+  color: var(--kawaii-text);
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.kawaii-mi-cancion-artista {
+  color: var(--kawaii-text-soft);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.kawaii-mi-cancion-borrar {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  color: var(--kawaii-text-soft);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.kawaii-mi-cancion-borrar:hover {
+  color: #e0507a;
+  background: rgba(224, 80, 122, 0.12);
+}
+
+/* ---- Perfil de invitada confirmada ---- */
+.kawaii-perfil {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-align: left;
+  gap: 20px;
+}
+
+.kawaii-perfil-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: rgba(255, 255, 255, 0.65);
+  border-radius: 22px;
+  padding: 14px 18px;
+  box-shadow: 0 6px 18px rgba(185, 130, 200, 0.15);
+}
+
+.kawaii-perfil-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #ffd6e8, #d9c6fb);
+  box-shadow: 0 4px 12px rgba(255, 143, 199, 0.35);
+  overflow: hidden;
+}
+
+.kawaii-perfil-info {
+  flex: 1 1 120px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.kawaii-perfil-nombre {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--kawaii-text);
+}
+
+.kawaii-perfil-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  width: fit-content;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(168, 230, 201, 0.4);
+  color: #3e8467;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.kawaii-perfil-cta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  padding: 11px 18px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #5b3a56, #8a5f82);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  box-shadow: 0 8px 18px rgba(91, 58, 86, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.kawaii-perfil-cta:hover {
+  transform: translateY(-2px);
+}
+
+.kawaii-perfil-section-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--kawaii-text);
+  margin: 0;
+}
+
+.kawaii-perfil-canciones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+}
+
+.kawaii-perfil-cancion-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  padding: 12px 14px;
+  box-shadow: 0 4px 14px rgba(185, 130, 200, 0.15);
+}
+
+.kawaii-perfil-cancion-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #9bd8f5, #bde0fe);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kawaii-perfil-cancion-texto {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kawaii-perfil-cancion-texto .kawaii-mi-cancion-titulo,
+.kawaii-perfil-cancion-texto .kawaii-mi-cancion-artista {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .kawaii-perfil-header {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .kawaii-perfil-info {
+    align-items: center;
+  }
+
+  .kawaii-perfil-cta {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 .kawaii-already-confirmed {
   display: flex;
   align-items: center;
@@ -1246,6 +1509,27 @@ html, body, #root {
 
 .kawaii-back-link:hover {
   color: var(--kawaii-pink);
+}
+
+.kawaii-danger-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 2px auto 0;
+  background: none;
+  border: none;
+  color: #d16b6b;
+  opacity: 0.7;
+  font-size: 0.72rem;
+  font-style: italic;
+  cursor: pointer;
+  padding: 4px 10px;
+  transition: opacity 0.2s ease;
+}
+
+.kawaii-danger-link:hover {
+  opacity: 1;
 }
 
 @media (max-width: 480px) {

@@ -1,12 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, Search, Check } from 'lucide-react';
 
-function NombreCombobox({ invitadas, value, onChange, placeholder = 'Selecciona tu nombre...' }) {
+function NombreCombobox({ invitadas, value, onChange, placeholder = 'Escribe o selecciona tu nombre...' }) {
   const [abierto, setAbierto] = useState(false);
   const [query, setQuery] = useState('');
   const wrapperRef = useRef(null);
+  const inputRef = useRef(null);
 
-  const seleccionada = invitadas.find((i) => i.id === value);
+  // Mantiene el texto sincronizado con la invitada seleccionada (externa o interna)
+  useEffect(() => {
+    const inv = invitadas.find((i) => i.id === value);
+    setQuery(inv ? inv.nombre : '');
+  }, [value]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!abierto) return;
@@ -21,42 +26,65 @@ function NombreCombobox({ invitadas, value, onChange, placeholder = 'Selecciona 
     return () => document.removeEventListener('mousedown', handleClickFuera);
   }, [abierto]);
 
-  useEffect(() => {
-    if (!abierto) setQuery('');
-  }, [abierto]);
-
   const filtradas = query.trim()
     ? invitadas.filter((i) => i.nombre.toLowerCase().includes(query.trim().toLowerCase()))
     : invitadas;
 
   const handleSelect = (inv) => {
+    setQuery(inv.nombre);
     onChange(inv.id);
     setAbierto(false);
   };
 
+  const handleInputChange = (e) => {
+    const texto = e.target.value;
+    setQuery(texto);
+    if (!abierto) setAbierto(true);
+
+    // Si ya había una invitada seleccionada y el texto ya no coincide, se limpia la selección
+    if (value) {
+      const inv = invitadas.find((i) => i.id === value);
+      if (!inv || inv.nombre !== texto) {
+        onChange('');
+      }
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (filtradas.length > 0) handleSelect(filtradas[0]);
+    } else if (e.key === 'Escape') {
+      setAbierto(false);
+      inputRef.current?.blur();
+    }
+  };
+
+  const handleBlur = () => {
+    setAbierto(false);
+    if (!value) setQuery('');
+  };
+
   return (
     <div className={`kawaii-combobox ${abierto ? 'is-open' : ''}`} ref={wrapperRef}>
-      <button
-        type="button"
-        className="kawaii-combobox-trigger"
-        onClick={() => setAbierto((o) => !o)}
-      >
+      <div className="kawaii-combobox-trigger">
         <Search size={16} className="kawaii-combobox-icon" />
-        <span className={seleccionada ? 'kawaii-combobox-value' : 'kawaii-combobox-placeholder'}>
-          {seleccionada ? seleccionada.nombre : placeholder}
-        </span>
+        <input
+          ref={inputRef}
+          type="text"
+          className="kawaii-combobox-input"
+          placeholder={placeholder}
+          value={query}
+          onChange={handleInputChange}
+          onFocus={() => setAbierto(true)}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          autoComplete="off"
+        />
         <ChevronDown size={16} className="kawaii-combobox-chevron" />
-      </button>
+      </div>
 
       <div className="kawaii-combobox-panel">
-        <input
-          type="text"
-          className="kawaii-combobox-search"
-          placeholder="Escribe tu nombre..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          autoFocus
-        />
         <ul className="kawaii-combobox-list">
           {filtradas.length === 0 && (
             <li className="kawaii-combobox-empty">Sin resultados...</li>

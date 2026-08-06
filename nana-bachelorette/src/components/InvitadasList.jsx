@@ -6,6 +6,7 @@ import { UserPlus, Trash2 } from 'lucide-react';
 function InvitadasList({ invitadas }) {
   const [mostrarForm, setMostrarForm] = useState(false);
   const [nombre, setNombre] = useState('');
+  const [email, setEmail] = useState('');
   const [cargando, setCargando] = useState(false);
 
   const handleAgregar = async (e) => {
@@ -16,10 +17,13 @@ function InvitadasList({ invitadas }) {
     try {
       await addDoc(collection(db, "invitadas"), {
         nombre: nombre.trim(),
+        email: email.trim().toLowerCase(),
         confirmada: false,
+        declinada: false,
         fecha: serverTimestamp()
       });
       setNombre('');
+      setEmail('');
       setMostrarForm(false);
     } catch (error) {
       console.error("Error al agregar invitada:", error);
@@ -60,6 +64,12 @@ function InvitadasList({ invitadas }) {
             onChange={(e) => setNombre(e.target.value)}
             autoFocus
             required
+          />
+          <input
+            type="email"
+            placeholder="Correo de la invitada (opcional)"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <button type="submit" disabled={cargando}>
             {cargando ? '...' : 'Añadir'}
