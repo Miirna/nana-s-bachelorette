@@ -855,7 +855,7 @@ html, body, #root {
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
   width: 100%;
   max-width: 460px;
@@ -890,6 +890,17 @@ html, body, #root {
   font-size: 0.72rem;
   text-align: center;
   overflow-wrap: anywhere;
+}
+
+.kawaii-pill-link {
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.kawaii-pill-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(185, 130, 200, 0.28);
 }
 
 .kawaii-footer {
@@ -1446,6 +1457,73 @@ html, body, #root {
   flex-shrink: 0;
 }
 
+.kawaii-perfil-cancion-icon-num {
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+/* ---- Dashboard ---- */
+.kawaii-dashboard-tabs {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  gap: 8px;
+  background: rgba(91, 58, 86, 0.06);
+  border-radius: 16px;
+  padding: 5px;
+  margin: 18px 0 22px;
+}
+
+.kawaii-dash-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 8px;
+  border: none;
+  background: transparent;
+  border-radius: 12px;
+  color: var(--kawaii-text-soft);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.kawaii-dash-tab:hover {
+  color: var(--kawaii-pink);
+}
+
+.kawaii-dash-tab.is-active {
+  background: linear-gradient(135deg, var(--kawaii-pink), var(--kawaii-lavender));
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(255, 143, 199, 0.35);
+}
+
+.kawaii-dashboard-content {
+  width: 100%;
+  text-align: left;
+}
+
+.kawaii-dash-check {
+  color: #3e8467;
+  flex-shrink: 0;
+}
+
+.kawaii-dash-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.kawaii-dash-add-form {
+  margin-bottom: 18px;
+}
+
 .kawaii-perfil-cancion-texto {
   flex: 1;
   min-width: 0;
@@ -1489,6 +1567,42 @@ html, body, #root {
   color: #3e8467;
   font-weight: 700;
   font-size: 0.9rem;
+}
+
+.kawaii-gift-note {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 20px;
+  border-radius: 18px;
+  background: rgba(255, 201, 113, 0.18);
+  border: 1px dashed rgba(255, 201, 113, 0.6);
+  text-align: center;
+}
+
+.kawaii-gift-note h4 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--kawaii-text);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.kawaii-gift-note h4 svg {
+  color: var(--kawaii-pink);
+}
+
+.kawaii-gift-note p {
+  margin: 0;
+  color: var(--kawaii-text-soft);
+  font-size: 0.82rem;
+  line-height: 1.5;
 }
 
 .kawaii-back-link {
@@ -1556,4 +1670,642 @@ html, body, #root {
 @keyframes scaleUp {
   from { transform: scale(0.8); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
+}
+
+/* ===============================================
+   DASHBOARD ADMIN — SIDEBAR + TOPBAR + PANELES
+   =============================================== */
+.kawaii-dash-shell {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+}
+
+.kawaii-dash-sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: #fff9fc;
+  border-right: 1px solid rgba(255, 143, 199, 0.2);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 18px;
+  box-sizing: border-box;
+}
+
+.kawaii-dash-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.kawaii-dash-brand-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #ff8fc7, #b9a2f2);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kawaii-dash-brand-title {
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: #5b3a56;
+  line-height: 1.25;
+}
+
+.kawaii-dash-brand-subtitle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: #8a6b86;
+  font-weight: 600;
+}
+
+.kawaii-dash-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.kawaii-dash-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border: none;
+  background: transparent;
+  border-radius: 14px;
+  color: #8a6b86;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.kawaii-dash-nav-item:hover {
+  background: rgba(255, 143, 199, 0.1);
+  color: #5b3a56;
+}
+
+.kawaii-dash-nav-item.is-active {
+  background: linear-gradient(135deg, #ff8fc7, #d79bf0);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(255, 143, 199, 0.35);
+}
+
+.kawaii-dash-nav-item-muted {
+  color: #c9bcc7;
+  cursor: not-allowed;
+}
+
+.kawaii-dash-nav-item-muted:hover {
+  background: transparent;
+  color: #c9bcc7;
+}
+
+.kawaii-dash-sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 20px;
+}
+
+.kawaii-dash-add-song-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #5b3a56, #8a5f82);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.82rem;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(91, 58, 86, 0.3);
+  transition: transform 0.2s ease;
+  margin-bottom: 8px;
+  white-space: nowrap;
+}
+
+.kawaii-dash-add-song-btn:hover {
+  transform: translateY(-2px);
+}
+
+.kawaii-dash-body {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at 15% 15%, #ffe1ef 0%, transparent 45%),
+    radial-gradient(circle at 85% 20%, #dceaff 0%, transparent 45%),
+    radial-gradient(circle at 50% 90%, #e3d6ff 0%, transparent 50%),
+    linear-gradient(160deg, #fff5f9 0%, #f3f0ff 50%, #eef8ff 100%);
+}
+
+.kawaii-dash-topbar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 28px;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.kawaii-dash-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  max-width: 320px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  color: #8a6b86;
+  box-sizing: border-box;
+}
+
+.kawaii-dash-search input {
+  border: none;
+  background: transparent;
+  outline: none;
+  flex: 1;
+  min-width: 0;
+  font-size: 0.85rem;
+  color: #5b3a56;
+}
+
+.kawaii-dash-search input::placeholder {
+  color: #b998c9;
+}
+
+.kawaii-dash-topbar-icons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.kawaii-dash-icon-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.7);
+  color: #8a6b86;
+  flex-shrink: 0;
+}
+
+.kawaii-dash-avatar,
+.kawaii-dash-avatar-sm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff8fc7, #b9a2f2);
+  color: #fff;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.kawaii-dash-avatar {
+  width: 34px;
+  height: 34px;
+  font-size: 0.85rem;
+}
+
+.kawaii-dash-avatar-sm {
+  width: 24px;
+  height: 24px;
+  font-size: 0.7rem;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.kawaii-dash-main {
+  position: relative;
+  z-index: 1;
+  padding: 28px;
+  box-sizing: border-box;
+}
+
+.kawaii-dash-page-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #5b3a56;
+  margin: 0 0 4px 0;
+}
+
+.kawaii-dash-page-subtitle {
+  color: #8a6b86;
+  font-size: 0.9rem;
+  margin: 0 0 22px 0;
+}
+
+.kawaii-dash-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.kawaii-dash-stat-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 8px 20px rgba(185, 130, 200, 0.15);
+}
+
+.kawaii-dash-stat-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.kawaii-dash-stat-icon-pink { background: linear-gradient(135deg, #ff8fc7, #ffc2dd); }
+.kawaii-dash-stat-icon-green { background: linear-gradient(135deg, #7ed9a8, #a8e6c9); }
+.kawaii-dash-stat-icon-blue { background: linear-gradient(135deg, #6fb8e8, #9bd8f5); }
+.kawaii-dash-stat-icon-red { background: linear-gradient(135deg, #ff8fa3, #ffc2ce); }
+
+.kawaii-dash-stat-value {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #5b3a56;
+  line-height: 1;
+}
+
+.kawaii-dash-stat-label {
+  margin-top: 6px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #8a6b86;
+}
+
+.kawaii-dash-panels {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 18px;
+}
+
+.kawaii-dash-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 22px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(185, 130, 200, 0.15);
+  box-sizing: border-box;
+}
+
+.kawaii-dash-panel-full {
+  text-align: left;
+}
+
+.kawaii-dash-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.kawaii-dash-panel-header h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #5b3a56;
+  margin: 0;
+}
+
+.kawaii-dash-pill-btn {
+  border: none;
+  background: rgba(255, 143, 199, 0.15);
+  color: #ff8fc7;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.kawaii-dash-song-preview {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.kawaii-dash-song-preview li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.kawaii-dash-tag {
+  flex-shrink: 0;
+  background: rgba(155, 216, 245, 0.3);
+  color: #3d7ca8;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.kawaii-dash-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.kawaii-dash-table th {
+  text-align: left;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #8a6b86;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 143, 199, 0.2);
+}
+
+.kawaii-dash-table td {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 143, 199, 0.12);
+  color: #5b3a56;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.kawaii-dash-status {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.kawaii-dash-status-ok {
+  background: rgba(168, 230, 201, 0.4);
+  color: #3e8467;
+}
+
+.kawaii-dash-status-no {
+  background: rgba(255, 143, 143, 0.25);
+  color: #b3453f;
+}
+
+.kawaii-dash-status-pending {
+  background: rgba(155, 216, 245, 0.35);
+  color: #2f6f96;
+}
+
+.kawaii-dash-filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.kawaii-dash-filter-pill {
+  border: 1px solid rgba(255, 143, 199, 0.25);
+  background: rgba(255, 255, 255, 0.6);
+  color: #8a6b86;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.kawaii-dash-filter-pill:hover {
+  border-color: #ff8fc7;
+  color: #5b3a56;
+}
+
+.kawaii-dash-filter-pill.is-active {
+  background: #5b3a56;
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(91, 58, 86, 0.35);
+}
+
+/* ---- Encabezado "Lista de Invitadas" ---- */
+.kawaii-dash-invitadas-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.kawaii-dash-invitadas-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #5b3a56;
+  margin: 0 0 4px 0;
+}
+
+.kawaii-dash-invitadas-subtitle {
+  color: #ff8fc7;
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.kawaii-dash-invite-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  padding: 11px 20px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #7ed9a8, #a8e6c9);
+  color: #1f5c3f;
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgba(126, 217, 168, 0.35);
+  transition: transform 0.2s ease;
+}
+
+.kawaii-dash-invite-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* ---- Tabla de invitadas ---- */
+.kawaii-dash-table-card {
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(185, 130, 200, 0.15);
+}
+
+.kawaii-dash-table-invitadas {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.kawaii-dash-table-invitadas thead tr {
+  background: rgba(91, 58, 86, 0.05);
+}
+
+.kawaii-dash-table-invitadas th {
+  text-align: left;
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #8a6b86;
+  padding: 12px 18px;
+  font-weight: 700;
+}
+
+.kawaii-dash-table-invitadas td {
+  padding: 14px 18px;
+  border-top: 1px solid rgba(255, 143, 199, 0.1);
+  color: #5b3a56;
+  font-size: 0.88rem;
+}
+
+.kawaii-dash-td-nombre {
+  font-weight: 800;
+}
+
+.kawaii-dash-td-correo {
+  color: #8a6b86;
+  font-weight: 500;
+}
+
+.kawaii-dash-search-invitadas {
+  max-width: 100%;
+  width: 100%;
+  margin-bottom: 14px;
+}
+
+.kawaii-dash-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.kawaii-dash-pagination span {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #8a6b86;
+}
+
+.kawaii-dash-pagination button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 143, 199, 0.3);
+  background: rgba(255, 255, 255, 0.7);
+  color: #5b3a56;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.kawaii-dash-pagination button:hover:not(:disabled) {
+  background: #5b3a56;
+  color: #fff;
+  border-color: transparent;
+}
+
+.kawaii-dash-pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .kawaii-dash-panels {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .kawaii-dash-shell {
+    flex-direction: column;
+  }
+
+  .kawaii-dash-sidebar {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    padding: 14px 16px;
+    overflow-x: auto;
+  }
+
+  .kawaii-dash-brand {
+    margin-bottom: 0;
+  }
+
+  .kawaii-dash-nav {
+    flex-direction: row;
+  }
+
+  .kawaii-dash-sidebar-footer {
+    flex-direction: row;
+    margin-top: 0;
+    margin-left: auto;
+  }
+
+  .kawaii-dash-add-song-btn {
+    margin-bottom: 0;
+  }
+
+  .kawaii-dash-main {
+    padding: 20px;
+  }
+
+  .kawaii-dash-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

@@ -4,7 +4,7 @@ import { collection, addDoc, doc, updateDoc, deleteDoc, serverTimestamp } from '
 import confetti from 'canvas-confetti';
 import {
   Sparkles, CheckCircle2, X, HeartCrack, Trash2, ShieldCheck, LogOut,
-  Mic, Heart, CalendarDays, MapPin, Music2, ArrowLeft
+  Mic, Heart, CalendarDays, MapPin, Music2, ArrowLeft, Gift
 } from 'lucide-react';
 import { useInvitadas } from '../hooks/useInvitadas';
 import { useCanciones } from '../hooks/useCanciones';
@@ -408,9 +408,38 @@ function RegistroPage() {
               <h1 className="kawaii-title">Nana's Bachelorette</h1>
               <h2 className="kawaii-subtitle">Karaoke Party! <Sparkles size={18} /></h2>
               <p className="kawaii-description">
-                ¡Únete a nosotros para una noche mágica y dulce de canto y amistad!. 
+                ¡Únete a nosotros para una noche mágica y dulce de canto y amistad!.
                 Prepara tu canción favorita y creemos juntos recuerdos inolvidables.
               </p>
+
+              <div className="kawaii-info-pills">
+                <div className="kawaii-pill">
+                  <CalendarDays size={20} />
+                  <span>Fecha</span>
+                  <small>22 de agosto, 5:30 pm</small>
+                </div>
+                <a
+                  href="https://maps.app.goo.gl/Ln6VLUGpthetiFvE9"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="kawaii-pill kawaii-pill-link"
+                >
+                  <MapPin size={20} />
+                  <span>Lugar</span>
+                  <small>Ver ubicación</small>
+                </a>
+              </div>
+
+              <div className="kawaii-gift-note">
+                <h4><Gift size={16} /> Sugerencias de Regalo</h4>
+                <p>
+                  ¡Tu presencia es nuestro mejor regalo! Pero si deseas tener
+                  un detalle, una lluvia de sobres o un obsequio especial
+                  será bien recibido con mucho cariño.
+                </p>
+              </div>
+
+              <p className="kawaii-step-subtitle">A continuación busca tu nombre para confirmar tu asistencia</p>
 
               <div className="kawaii-field">
                 <label>Busca tu nombre</label>
@@ -731,26 +760,6 @@ function RegistroPage() {
           )}
 
         </div>
-
-        {paso === 'bienvenida' && (
-          <div className="kawaii-info-pills">
-            <div className="kawaii-pill">
-              <CalendarDays size={20} />
-              <span>Fecha</span>
-              <small>Próximamente...</small>
-            </div>
-            <div className="kawaii-pill">
-              <MapPin size={20} />
-              <span>Lugar</span>
-              <small>Por confirmar</small>
-            </div>
-            <div className="kawaii-pill">
-              <Music2 size={20} />
-              <span>Canciones</span>
-              <small>¡Infinitas!</small>
-            </div>
-          </div>
-        )}
       </main>
 
       <footer className="kawaii-footer">
