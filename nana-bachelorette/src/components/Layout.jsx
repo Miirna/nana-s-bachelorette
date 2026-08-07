@@ -28,7 +28,7 @@ function Layout() {
 
         {/* LOGO / ENCABEZADO PRINCIPAL */}
         <div className="app-header-logo">
-          <h1 className="main-title">Nana's Bachelorette</h1>
+          <h1 className="main-title">Despedida de Soltera de Mirna</h1>
           <p className="logo-tagline">
             Girls Just Want to Have Fun & Sing Karaoke
           </p>

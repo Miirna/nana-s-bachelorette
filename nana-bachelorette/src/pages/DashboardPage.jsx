@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react';
 import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import {
-  Sparkles, Search, Heart, Bell, LayoutDashboard, Users, Music2, Settings,
-  Plus, X, CheckCircle2, Clock, ListMusic
+  Sparkles, Search, LayoutDashboard, Users, Music2, Settings,
+  Plus, X, CheckCircle2, Clock, ListMusic, Menu
 } from 'lucide-react';
 import { useCanciones } from '../hooks/useCanciones';
 import { useInvitadas } from '../hooks/useInvitadas';
@@ -34,6 +34,7 @@ function calcularDiasEvento() {
 
 function DashboardPage() {
   const [tabActiva, setTabActiva] = useState('resumen');
+  const [menuAbierto, setMenuAbierto] = useState(false);
   const [busqueda, setBusqueda] = useState('');
   const [mostrarModalCancion, setMostrarModalCancion] = useState(false);
   const [invitadaIdModal, setInvitadaIdModal] = useState('');
@@ -67,6 +68,11 @@ function DashboardPage() {
     return mapa;
   }, [confirmaciones]);
 
+  const handleCambiarTab = (tab) => {
+    setTabActiva(tab);
+    setMenuAbierto(false);
+  };
+
   const handleAbrirModalCancion = () => {
     setInvitadaIdModal('');
     setCancionModal('');
@@ -98,34 +104,41 @@ function DashboardPage() {
 
   return (
     <div className="kawaii-dash-shell">
-      <aside className="kawaii-dash-sidebar">
+      <aside className={`kawaii-dash-sidebar ${menuAbierto ? 'is-open' : ''}`}>
         <div className="kawaii-dash-brand">
           <div className="kawaii-dash-brand-icon"><Sparkles size={18} /></div>
           <div>
-            <div className="kawaii-dash-brand-title">Nana's Bachelorette</div>
+            <div className="kawaii-dash-brand-title">Despedida de Soltera de Mirna</div>
             <div className="kawaii-dash-brand-subtitle">Karaoke Party <Sparkles size={11} /></div>
           </div>
+          <button
+            type="button"
+            className="kawaii-dash-close-btn"
+            onClick={() => setMenuAbierto(false)}
+          >
+            <X size={18} />
+          </button>
         </div>
 
         <nav className="kawaii-dash-nav">
           <button
             type="button"
             className={`kawaii-dash-nav-item ${tabActiva === 'resumen' ? 'is-active' : ''}`}
-            onClick={() => setTabActiva('resumen')}
+            onClick={() => handleCambiarTab('resumen')}
           >
             <LayoutDashboard size={17} /> Resumen
           </button>
           <button
             type="button"
             className={`kawaii-dash-nav-item ${tabActiva === 'invitadas' ? 'is-active' : ''}`}
-            onClick={() => setTabActiva('invitadas')}
+            onClick={() => handleCambiarTab('invitadas')}
           >
             <Users size={17} /> Invitadas
           </button>
           <button
             type="button"
             className={`kawaii-dash-nav-item ${tabActiva === 'canciones' ? 'is-active' : ''}`}
-            onClick={() => setTabActiva('canciones')}
+            onClick={() => handleCambiarTab('canciones')}
           >
             <Music2 size={17} /> Canciones
           </button>
@@ -141,10 +154,21 @@ function DashboardPage() {
         </div>
       </aside>
 
+      {menuAbierto && (
+        <div className="kawaii-dash-overlay" onClick={() => setMenuAbierto(false)} />
+      )}
+
       <div className="kawaii-dash-body">
         <KawaiiBackground />
 
         <header className="kawaii-dash-topbar">
+          <button
+            type="button"
+            className="kawaii-dash-menu-btn"
+            onClick={() => setMenuAbierto(true)}
+          >
+            <Menu size={20} />
+          </button>
           <div className="kawaii-dash-search">
             <Search size={16} />
             <input
@@ -155,8 +179,6 @@ function DashboardPage() {
             />
           </div>
           <div className="kawaii-dash-topbar-icons">
-            <span className="kawaii-dash-icon-btn"><Heart size={16} /></span>
-            <span className="kawaii-dash-icon-btn"><Bell size={16} /></span>
             <span className="kawaii-dash-avatar">N</span>
           </div>
         </header>

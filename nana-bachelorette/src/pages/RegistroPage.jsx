@@ -34,10 +34,15 @@ function RegistroPage() {
 
   const [cancion, setCancion] = useState('');
   const [artista, setArtista] = useState('');
+  const [mensajeNovia, setMensajeNovia] = useState('');
   const [cargando, setCargando] = useState(false);
   const [mostrarToast, setMostrarToast] = useState(false);
   const [toastInfo, setToastInfo] = useState({ titulo: '', mensaje: '' });
   const [mostrarModalCancion, setMostrarModalCancion] = useState(false);
+
+  const [mostrarModalMensaje, setMostrarModalMensaje] = useState(false);
+  const [mensajeModal, setMensajeModal] = useState('');
+  const [guardandoMensaje, setGuardandoMensaje] = useState(false);
 
   const invitadasOrdenadas = useMemo(
     () => [...invitadas].sort((a, b) => a.nombre.localeCompare(b.nombre, 'es')),
@@ -154,7 +159,8 @@ function RegistroPage() {
     setPaso('correo');
   };
 
-  // Paso "correo" -> primera vez: solo se guarda el correo y se confirma la asistencia (sin código).
+  // Paso "correo" -> primera vez: solo se guarda el correo, la confirmación final queda
+  // pendiente hasta que también agregue su canción (ver handleSubmit).
   // Corrigiendo correo (ya confirmada): se guarda el nuevo correo y AHÍ sí se manda el código.
   const handleContinuarCorreo = async () => {
     if (!invitadaId || !correoIngresado.trim()) return;
@@ -170,12 +176,8 @@ function RegistroPage() {
     setConfirmando(true);
     try {
       await updateDoc(doc(db, "invitadas", invitadaId), {
-        email: correo,
-        confirmada: true,
-        fechaConfirmacion: serverTimestamp()
+        email: correo
       });
-      notificarConfirmacionANovia({ nombreInvitada: invitadaSeleccionada.nombre })
-        .catch((error) => console.error("No se pudo notificar a la novia:", error));
       setPaso('cancion');
     } catch (error) {
       console.error("Error al confirmar asistencia:", error);
@@ -249,6 +251,29 @@ function RegistroPage() {
     setMostrarModalCancion(true);
   };
 
+  const handleAbrirModalMensaje = () => {
+    setMensajeModal(invitadaSeleccionada?.mensajeNovia || '');
+    setMostrarModalMensaje(true);
+  };
+
+  const handleGuardarMensaje = async (e) => {
+    e.preventDefault();
+    if (!invitadaId) return;
+    setGuardandoMensaje(true);
+
+    try {
+      await updateDoc(doc(db, "invitadas", invitadaId), {
+        mensajeNovia: mensajeModal.trim()
+      });
+      setMostrarModalMensaje(false);
+    } catch (error) {
+      console.error("Error al guardar el mensaje:", error);
+      alert("Hubo un detalle al guardar tu mensaje.");
+    } finally {
+      setGuardandoMensaje(false);
+    }
+  };
+
   // Tras declinar, regresamos automáticamente al inicio
   useEffect(() => {
     if (paso !== 'declinado') return;
@@ -275,6 +300,17 @@ function RegistroPage() {
 
       await addDoc(collection(db, "confirmaciones"), nuevaConfirmacion);
 
+      if (paso === 'cancion') {
+        // Hasta aquí se da por completa la confirmación: ya tiene correo Y canción.
+        await updateDoc(doc(db, "invitadas", invitadaId), {
+          confirmada: true,
+          fechaConfirmacion: serverTimestamp(),
+          ...(mensajeNovia.trim() ? { mensajeNovia: mensajeNovia.trim() } : {})
+        });
+        notificarConfirmacionANovia({ nombreInvitada: invitadaSeleccionada.nombre })
+          .catch((error) => console.error("No se pudo notificar a la novia:", error));
+      }
+
       confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
 
       if (paso === 'cancion') {
@@ -297,6 +333,7 @@ function RegistroPage() {
 
       setCancion('');
       setArtista('');
+      setMensajeNovia('');
 
       setTimeout(() => {
         setMostrarToast(false);
@@ -372,8 +409,37 @@ function RegistroPage() {
         </div>
       )}
 
+      {mostrarModalMensaje && (
+        <div className="kawaii-modal-overlay" onClick={() => setMostrarModalMensaje(false)}>
+          <div className="kawaii-modal-card" onClick={(e) => e.stopPropagation()}>
+            <button className="toast-close" onClick={() => setMostrarModalMensaje(false)}>
+              <X size={18} />
+            </button>
+            <h3 className="kawaii-step-title">Mensaje para la novia <Heart size={16} /></h3>
+
+            <form onSubmit={handleGuardarMensaje} className="kawaii-form-group">
+              <div className="kawaii-field">
+                <label>Tu mensaje</label>
+                <textarea
+                  placeholder="Escríbele unas palabras a Mirna..."
+                  value={mensajeModal}
+                  onChange={(e) => setMensajeModal(e.target.value)}
+                  rows={4}
+                  autoFocus
+                />
+              </div>
+
+              <button type="submit" className="kawaii-cta" disabled={guardandoMensaje}>
+                <Sparkles size={16} />
+                {guardandoMensaje ? 'Guardando...' : 'Guardar mensaje'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
       <header className="kawaii-topbar">
-        <div className="kawaii-brand">Nana's Bachelorette <Sparkles size={16} /></div>
+        <div className="kawaii-brand">Despedida de Soltera de Mirna <Sparkles size={16} /></div>
         <nav className="kawaii-nav-links">
           {paso === 'perfil' && (
             <button type="button" className="kawaii-logout-btn" onClick={handleAtras}>
@@ -405,7 +471,7 @@ function RegistroPage() {
               <div className="kawaii-icon-badge">
                 <Mic size={30} />
               </div>
-              <h1 className="kawaii-title">Nana's Bachelorette</h1>
+              <h1 className="kawaii-title">Despedida de Soltera de Mirna</h1>
               <h2 className="kawaii-subtitle">Karaoke Party! <Sparkles size={18} /></h2>
               <p className="kawaii-description">
                 ¡Únete a nosotros para una noche mágica y dulce de canto y amistad!.
@@ -687,6 +753,23 @@ function RegistroPage() {
                   />
                 </div>
 
+                <div className="kawaii-field">
+                  <div className="kawaii-label-row">
+                    <label>Mensaje para la novia</label>
+                    <span className="kawaii-optional-tag">opcional</span>
+                  </div>
+                  <textarea
+                    placeholder="Escríbele unas palabras a Mirna..."
+                    value={mensajeNovia}
+                    onChange={(e) => setMensajeNovia(e.target.value)}
+                    rows={3}
+                  />
+                  <small className="kawaii-field-hint">
+                    ¿No se te ocurre nada ahorita? No hay bronca, más adelante
+                    podrás agregarlo desde tu perfil 💕
+                  </small>
+                </div>
+
                 <button type="submit" className="kawaii-cta" disabled={cargando}>
                   <Sparkles size={16} />
                   {cargando ? 'Guardando...' : 'Agregar al Line-up'}
@@ -752,10 +835,27 @@ function RegistroPage() {
                 </div>
               )}
 
+              <h3 className="kawaii-perfil-section-title">
+                <Heart size={14} /> Mensaje para la novia
+              </h3>
+
+              {invitadaSeleccionada.mensajeNovia ? (
+                <div className="kawaii-mensaje-novia-card">
+                  <p>{invitadaSeleccionada.mensajeNovia}</p>
+                  <button type="button" className="kawaii-dash-pill-btn" onClick={handleAbrirModalMensaje}>
+                    Editar mensaje
+                  </button>
+                </div>
+              ) : (
+                <button type="button" className="kawaii-perfil-cta" onClick={handleAbrirModalMensaje}>
+                  <Heart size={15} /> Dejar un mensaje
+                </button>
+              )}
+
               {/* TEMPORAL: solo para pruebas */}
-              <button type="button" className="kawaii-danger-link" onClick={handleBorrarConfirmacion}>
+              {/*<button type="button" className="kawaii-danger-link" onClick={handleBorrarConfirmacion}>
                 <Trash2 size={13} /> (Prueba) Borrar mi confirmación de asistencia
-              </button>
+              </button>*/}
             </div>
           )}
 
