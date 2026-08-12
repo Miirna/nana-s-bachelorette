@@ -1,4 +1,20 @@
 /* ===============================================
+   VARIABLES GLOBALES (disponibles en toda la app)
+   =============================================== */
+:root {
+  --kawaii-pink: #ff8fc7;
+  --kawaii-pink-soft: #ffd6e8;
+  --kawaii-lavender: #b9a2f2;
+  --kawaii-blue: #9bd8f5;
+  --kawaii-mint: #a8e6c9;
+  --kawaii-text: #5b3a56;
+  --kawaii-text-soft: #8a6b86;
+  --kawaii-card-bg: rgba(255, 255, 255, 0.82);
+  --kawaii-danger: #e0507a;
+  --kawaii-success: #3e8467;
+}
+
+/* ===============================================
    RESET BASE
    =============================================== */
 *, *::before, *::after {
@@ -795,6 +811,109 @@ html, body, #root {
   box-shadow: 0 8px 20px rgba(168, 230, 201, 0.5);
 }
 
+/* ---- Ruleta de Canciones ---- */
+.kawaii-ruleta-card {
+  align-items: center;
+}
+
+.kawaii-ruleta-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.kawaii-ruleta-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 1 / 1;
+  margin: 8px auto 4px;
+}
+
+.kawaii-ruleta-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.17, 0.67, 0.16, 0.99);
+  filter: drop-shadow(0 10px 26px rgba(185, 130, 200, 0.35));
+}
+
+.kawaii-ruleta-label {
+  font-size: 13px;
+  font-weight: 800;
+  fill: var(--kawaii-text, #5b3a56);
+  pointer-events: none;
+}
+
+.kawaii-ruleta-puntero {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-top: 22px solid var(--kawaii-text, #5b3a56);
+  z-index: 3;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.25));
+}
+
+.kawaii-ruleta-resultado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--kawaii-pink, #ff8fc7);
+  text-align: center;
+}
+
+.kawaii-ruleta-resultado h2 {
+  margin: 4px 0 0;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--kawaii-text, #5b3a56);
+}
+
+.kawaii-ruleta-artista {
+  margin: 0;
+  color: var(--kawaii-text-soft, #8a6b86);
+  font-size: 0.9rem;
+}
+
+.kawaii-ruleta-cantante {
+  margin-top: 10px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(255, 143, 199, 0.15);
+  color: var(--kawaii-text, #5b3a56);
+  font-size: 0.9rem;
+}
+
+.kawaii-ruleta-cantante strong {
+  color: var(--kawaii-pink, #ff8fc7);
+}
+
+.kawaii-ruleta-videos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.kawaii-ruleta-ver-video {
+  width: auto;
+  padding: 11px 22px;
+  font-size: 0.88rem;
+}
+
+.kawaii-ruleta-ver-video-cancion {
+  background: linear-gradient(135deg, #9bd8f5, #7ec4e8);
+  box-shadow: 0 10px 24px rgba(155, 216, 245, 0.45);
+}
+
 .kawaii-title {
   font-size: 1.6rem;
   font-weight: 900;
@@ -937,7 +1056,9 @@ html, body, #root {
 }
 
 .kawaii-field label {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 5px;
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 1px;
@@ -1166,12 +1287,12 @@ html, body, #root {
 }
 
 .kawaii-combobox.is-open .kawaii-combobox-trigger {
-  border-color: var(--kawaii-pink);
+  border-color: var(--kawaii-pink, #ff8fc7);
   box-shadow: 0 0 0 3px rgba(255, 143, 199, 0.2);
 }
 
 .kawaii-combobox-icon {
-  color: var(--kawaii-pink);
+  color: var(--kawaii-pink, #ff8fc7);
   flex-shrink: 0;
 }
 
@@ -1181,7 +1302,7 @@ html, body, #root {
   border: none;
   outline: none;
   background: transparent;
-  color: var(--kawaii-text);
+  color: var(--kawaii-text, #5b3a56);
   font-family: inherit;
   font-size: 1rem;
   font-weight: 600;
@@ -1189,19 +1310,19 @@ html, body, #root {
 }
 
 .kawaii-combobox-input::placeholder {
-  color: var(--kawaii-text-soft);
+  color: var(--kawaii-text-soft, #8a6b86);
   font-weight: 400;
 }
 
 .kawaii-combobox-chevron {
-  color: var(--kawaii-text-soft);
+  color: var(--kawaii-text-soft, #8a6b86);
   flex-shrink: 0;
   transition: transform 0.25s ease;
 }
 
 .kawaii-combobox.is-open .kawaii-combobox-chevron {
   transform: rotate(180deg);
-  color: var(--kawaii-pink);
+  color: var(--kawaii-pink, #ff8fc7);
 }
 
 .kawaii-combobox-panel {
@@ -1214,17 +1335,16 @@ html, body, #root {
   border: 1px solid rgba(255, 143, 199, 0.3);
   border-radius: 16px;
   box-shadow: 0 12px 30px rgba(185, 130, 200, 0.3);
-  overflow: hidden;
-  max-height: 0;
   opacity: 0;
+  visibility: hidden;
   transform: translateY(-6px) scale(0.98);
   pointer-events: none;
-  transition: max-height 0.25s ease, opacity 0.2s ease, transform 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
 }
 
 .kawaii-combobox.is-open .kawaii-combobox-panel {
-  max-height: 260px;
   opacity: 1;
+  visibility: visible;
   transform: translateY(0) scale(1);
   pointer-events: auto;
 }
@@ -1244,7 +1364,7 @@ html, body, #root {
   gap: 8px;
   padding: 10px 12px;
   border-radius: 10px;
-  color: var(--kawaii-text);
+  color: var(--kawaii-text, #5b3a56);
   font-size: 0.92rem;
   cursor: pointer;
   transition: background 0.15s ease;
@@ -1257,12 +1377,12 @@ html, body, #root {
 .kawaii-combobox-option.is-selected {
   background: rgba(255, 143, 199, 0.2);
   font-weight: 700;
-  color: var(--kawaii-pink);
+  color: var(--kawaii-pink, #ff8fc7);
 }
 
 .kawaii-combobox-empty {
   padding: 14px 12px;
-  color: var(--kawaii-text-soft);
+  color: var(--kawaii-text-soft, #8a6b86);
   font-size: 0.85rem;
   text-align: center;
   font-style: italic;
@@ -1338,18 +1458,68 @@ html, body, #root {
 
 .kawaii-mi-cancion-borrar {
   flex-shrink: 0;
-  background: transparent;
-  border: none;
-  color: var(--kawaii-text-soft);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 143, 163, 0.3);
+  border: 1.5px solid rgba(255, 143, 163, 0.55);
+  color: var(--kawaii-danger, #e0507a);
   cursor: pointer;
-  padding: 6px;
-  border-radius: 8px;
+  padding: 0;
+  border-radius: 50%;
   transition: all 0.2s ease;
 }
 
-.kawaii-mi-cancion-borrar:hover {
-  color: #e0507a;
-  background: rgba(224, 80, 122, 0.12);
+.kawaii-mi-cancion-borrar:hover,
+.kawaii-mi-cancion-borrar:focus-visible {
+  transform: scale(1.08);
+  background: rgba(255, 143, 163, 0.5);
+  box-shadow: 0 4px 12px rgba(255, 143, 163, 0.4);
+  outline: none;
+}
+
+.kawaii-mi-cancion-borrar.kawaii-action-reset {
+  background: rgba(255, 143, 199, 0.25);
+  border-color: rgba(255, 143, 199, 0.5);
+  color: var(--kawaii-pink, #ff8fc7);
+}
+
+.kawaii-mi-cancion-borrar.kawaii-action-reset:hover,
+.kawaii-mi-cancion-borrar.kawaii-action-reset:focus-visible {
+  background: rgba(255, 143, 199, 0.4);
+  box-shadow: 0 4px 12px rgba(255, 143, 199, 0.35);
+}
+
+.kawaii-mi-cancion-borrar.kawaii-action-confirm {
+  background: rgba(168, 230, 201, 0.4);
+  border-color: rgba(168, 230, 201, 0.7);
+  color: var(--kawaii-success, #3e8467);
+}
+
+.kawaii-mi-cancion-borrar.kawaii-action-confirm:hover,
+.kawaii-mi-cancion-borrar.kawaii-action-confirm:focus-visible {
+  background: rgba(168, 230, 201, 0.6);
+  box-shadow: 0 4px 12px rgba(168, 230, 201, 0.45);
+}
+
+.kawaii-mi-cancion-borrar.kawaii-action-edit {
+  background: rgba(155, 216, 245, 0.35);
+  border-color: rgba(155, 216, 245, 0.65);
+  color: #2f7fa8;
+}
+
+.kawaii-mi-cancion-borrar.kawaii-action-edit:hover,
+.kawaii-mi-cancion-borrar.kawaii-action-edit:focus-visible {
+  background: rgba(155, 216, 245, 0.55);
+  box-shadow: 0 4px 12px rgba(155, 216, 245, 0.45);
+}
+
+.kawaii-dash-td-acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* ---- Perfil de invitada confirmada ---- */
@@ -1420,18 +1590,19 @@ html, body, #root {
   white-space: nowrap;
   padding: 11px 18px;
   border-radius: 999px;
-  border: none;
+  border: 1px solid rgba(255, 143, 199, 0.4);
   cursor: pointer;
-  background: linear-gradient(135deg, #5b3a56, #8a5f82);
-  color: #fff;
+  background: linear-gradient(135deg, #ffd6e8, #e4d6ff);
+  color: var(--kawaii-text, #5b3a56);
   font-weight: 700;
   font-size: 0.85rem;
-  box-shadow: 0 8px 18px rgba(91, 58, 86, 0.3);
-  transition: transform 0.2s ease;
+  box-shadow: 0 8px 18px rgba(185, 130, 200, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .kawaii-perfil-cta:hover {
   transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(185, 130, 200, 0.3);
 }
 
 .kawaii-perfil-section-title {
@@ -1533,10 +1704,6 @@ html, body, #root {
   justify-content: space-between;
   gap: 10px;
   margin-bottom: 16px;
-}
-
-.kawaii-dash-add-form {
-  margin-bottom: 18px;
 }
 
 .kawaii-perfil-cancion-texto {
@@ -1643,6 +1810,83 @@ html, body, #root {
 
 .kawaii-mensaje-novia-card .kawaii-dash-pill-btn {
   align-self: flex-start;
+}
+
+/* ---- Memory Wall (mensajes para la novia) ---- */
+.kawaii-memory-wall-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.kawaii-memory-wall-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.7rem;
+  font-weight: 900;
+  color: var(--kawaii-text, #5b3a56);
+  margin: 0 0 6px;
+}
+
+.kawaii-memory-wall-subtitle {
+  margin: 0;
+  color: var(--kawaii-text-soft, #8a6b86);
+  font-size: 0.95rem;
+}
+
+.kawaii-memory-wall-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 34px 22px;
+  padding: 12px 6px 30px;
+}
+
+.kawaii-nota {
+  position: relative;
+  border: 2px solid;
+  border-radius: 10px;
+  padding: 24px 18px 16px;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 10px 22px rgba(91, 58, 86, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kawaii-nota:hover {
+  transform: rotate(0deg) scale(1.05) !important;
+  box-shadow: 0 16px 30px rgba(91, 58, 86, 0.25);
+  z-index: 2;
+}
+
+.kawaii-nota-pin {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-25deg);
+  color: #e0507a;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.25));
+}
+
+.kawaii-nota-texto {
+  margin: 6px 0 16px;
+  color: var(--kawaii-text, #5b3a56);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  font-style: italic;
+  white-space: pre-wrap;
+}
+
+.kawaii-nota-firma {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+  font-weight: 800;
+  font-size: 0.8rem;
+  color: var(--kawaii-text, #5b3a56);
+  opacity: 0.75;
 }
 
 .kawaii-back-link {
@@ -1788,6 +2032,7 @@ html, body, #root {
   font-weight: 700;
   cursor: pointer;
   text-align: left;
+  text-decoration: none;
   white-space: nowrap;
   transition: all 0.2s ease;
 }
@@ -1818,29 +2063,6 @@ html, body, #root {
   flex-direction: column;
   gap: 6px;
   margin-top: 20px;
-}
-
-.kawaii-dash-add-song-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 13px;
-  border: none;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #5b3a56, #8a5f82);
-  color: #fff;
-  font-weight: 800;
-  font-size: 0.82rem;
-  cursor: pointer;
-  box-shadow: 0 8px 18px rgba(91, 58, 86, 0.3);
-  transition: transform 0.2s ease;
-  margin-bottom: 8px;
-  white-space: nowrap;
-}
-
-.kawaii-dash-add-song-btn:hover {
-  transform: translateY(-2px);
 }
 
 .kawaii-dash-body {
@@ -1894,6 +2116,12 @@ html, body, #root {
 
 .kawaii-dash-search input::placeholder {
   color: #b998c9;
+}
+
+.kawaii-dash-cancion-filtro {
+  width: 100%;
+  max-width: 280px;
+  margin-bottom: 16px;
 }
 
 .kawaii-dash-topbar-icons {
@@ -2051,6 +2279,7 @@ html, body, #root {
 }
 
 .kawaii-dash-pill-btn {
+  display: inline-block;
   border: none;
   background: rgba(255, 143, 199, 0.15);
   color: #ff8fc7;
@@ -2059,6 +2288,7 @@ html, body, #root {
   padding: 6px 14px;
   border-radius: 999px;
   cursor: pointer;
+  text-decoration: none;
   white-space: nowrap;
 }
 
@@ -2254,6 +2484,64 @@ html, body, #root {
   font-weight: 800;
 }
 
+.kawaii-crown-badge {
+  color: #f5b700;
+  vertical-align: -2px;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+.kawaii-video-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: rgba(255, 143, 199, 0.15);
+  color: var(--kawaii-pink, #ff8fc7);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.kawaii-video-tag:hover {
+  background: rgba(255, 143, 199, 0.28);
+}
+
+.kawaii-video-tag-cancion {
+  background: rgba(155, 216, 245, 0.25);
+  color: #2f7fa8;
+}
+
+.kawaii-video-tag-cancion:hover {
+  background: rgba(155, 216, 245, 0.4);
+}
+
+.kawaii-cancion-url-subtitle {
+  margin-top: 4px;
+  margin-bottom: 18px;
+}
+
+.kawaii-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--kawaii-text, #5b3a56);
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.kawaii-checkbox-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--kawaii-pink, #ff8fc7);
+  cursor: pointer;
+}
+
 .kawaii-dash-td-correo {
   color: #8a6b86;
   font-weight: 500;
@@ -2395,10 +2683,6 @@ html, body, #root {
     flex-direction: column;
     margin-top: 20px;
     margin-left: 0;
-  }
-
-  .kawaii-dash-add-song-btn {
-    margin-bottom: 0;
   }
 
   .kawaii-dash-main {
