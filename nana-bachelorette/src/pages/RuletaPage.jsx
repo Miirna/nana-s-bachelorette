@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import confetti from 'canvas-confetti';
-import { Sparkles, Music2, RotateCcw, Disc3, X, Crown, Mic } from 'lucide-react';
+import { Sparkles, Music2, RotateCcw, Disc3, X, Crown, Mic, ChevronRight } from 'lucide-react';
 import { useCanciones } from '../hooks/useCanciones';
 import { useInvitadas } from '../hooks/useInvitadas';
 import KawaiiBackground from '../components/KawaiiBackground';
@@ -28,19 +28,32 @@ function RuletaPage() {
   const [cantadasIds, setCantadasIds] = useState(() => new Set());
   const [rotacion, setRotacion] = useState(0);
   const [girando, setGirando] = useState(false);
-  const [resultado, setResultado] = useState(null);
+  const [invitadaGirada, setInvitadaGirada] = useState(null); // { nombre, canciones }
+  const [resultado, setResultado] = useState(null); // canción elegida
   const rotacionRef = useRef(0);
   const timeoutRef = useRef(null);
-
-  const disponibles = useMemo(
-    () => confirmaciones.filter((c) => !cantadasIds.has(c.id)),
-    [confirmaciones, cantadasIds]
-  );
 
   const nombresNovia = useMemo(
     () => new Set(invitadas.filter((i) => i.esNovia).map((i) => i.nombre)),
     [invitadas]
   );
+
+  const totalPersonasConCancion = useMemo(
+    () => new Set(confirmaciones.map((c) => c.nombre)).size,
+    [confirmaciones]
+  );
+
+  const cancionesPorInvitada = useMemo(() => {
+    const mapa = new Map();
+    confirmaciones.forEach((c) => {
+      if (cantadasIds.has(c.id)) return;
+      if (!mapa.has(c.nombre)) mapa.set(c.nombre, []);
+      mapa.get(c.nombre).push(c);
+    });
+    return mapa;
+  }, [confirmaciones, cantadasIds]);
+
+  const disponibles = useMemo(() => [...cancionesPorInvitada.keys()], [cancionesPorInvitada]);
 
   useEffect(() => () => clearTimeout(timeoutRef.current), []);
 
@@ -53,11 +66,12 @@ function RuletaPage() {
   const handleGirar = () => {
     if (girando || n === 0) return;
     setResultado(null);
+    setInvitadaGirada(null);
     setGirando(true);
     reproducirGiro();
 
     const indice = Math.floor(Math.random() * n);
-    const elegido = disponibles[indice];
+    const nombreElegido = disponibles[indice];
     const centroSlice = indice * sliceAngle + sliceAngle / 2;
     const actualMod = ((rotacionRef.current % 360) + 360) % 360;
     const delta = ((360 - centroSlice - actualMod) % 360 + 360) % 360;
@@ -68,15 +82,25 @@ function RuletaPage() {
     clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
       setGirando(false);
-      setResultado(elegido);
-      setCantadasIds((prev) => new Set(prev).add(elegido.id));
-      confetti({ particleCount: 140, spread: 90, origin: { y: 0.5 } });
-      reproducirGanador();
+      setInvitadaGirada({
+        nombre: nombreElegido,
+        canciones: cancionesPorInvitada.get(nombreElegido) || []
+      });
+      confetti({ particleCount: 100, spread: 80, origin: { y: 0.5 } });
     }, DURACION_MS);
+  };
+
+  const handleElegirCancion = (cancionElegida) => {
+    setCantadasIds((prev) => new Set(prev).add(cancionElegida.id));
+    setResultado(cancionElegida);
+    setInvitadaGirada(null);
+    reproducirGanador();
+    confetti({ particleCount: 140, spread: 90, origin: { y: 0.5 } });
   };
 
   const handleReiniciar = () => {
     setCantadasIds(new Set());
+    setInvitadaGirada(null);
     setResultado(null);
   };
 
@@ -95,7 +119,7 @@ function RuletaPage() {
             {confirmaciones.length === 0
               ? 'Aún no hay canciones confirmadas para la ruleta.'
               : n > 0
-                ? `Quedan ${n} canción${n === 1 ? '' : 'es'} por cantar esta noche 🎤`
+                ? `Quedan ${n} invitada${n === 1 ? '' : 's'} por cantar esta noche 🎤`
                 : '¡Ya se cantaron todas las canciones! 🎉'}
           </p>
 
@@ -114,30 +138,32 @@ function RuletaPage() {
               ) : n === 1 ? (
                 <circle cx={cx} cy={cy} r={r} fill={COLORES_RULETA[0]} stroke="#fff" strokeWidth="2" />
               ) : (
-                disponibles.map((c, i) => {
+                disponibles.map((nombre, i) => {
                   const start = i * sliceAngle;
                   const end = start + sliceAngle;
                   const mid = start + sliceAngle / 2;
-                  const flip = mid > 90 && mid < 270;
+                  const pos = polarToCartesian(cx, cy, r * 0.62, mid);
+                  let anguloTexto = mid - 90;
+                  const normalizado = ((anguloTexto % 360) + 360) % 360;
+                  if (normalizado > 90 && normalizado < 270) anguloTexto += 180;
                   return (
-                    <g key={c.id}>
+                    <g key={nombre}>
                       <path
                         d={describeSlice(cx, cy, r, start, end)}
                         fill={COLORES_RULETA[i % COLORES_RULETA.length]}
                         stroke="#fff"
                         strokeWidth="2"
                       />
-                      <g transform={`rotate(${mid}, ${cx}, ${cy})`}>
-                        <text
-                          x={cx}
-                          y={cy - r * 0.62}
-                          textAnchor="middle"
-                          className="kawaii-ruleta-label"
-                          transform={flip ? `rotate(180, ${cx}, ${cy - r * 0.62})` : undefined}
-                        >
-                          {nombresNovia.has(c.nombre) ? '👑 ' : ''}{(c.nombre || '').split(' ')[0]}
-                        </text>
-                      </g>
+                      <text
+                        x={pos.x}
+                        y={pos.y}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        className="kawaii-ruleta-label"
+                        transform={`rotate(${anguloTexto}, ${pos.x}, ${pos.y})`}
+                      >
+                        {nombresNovia.has(nombre) ? '👑 ' : ''}{(nombre || '').split(' ')[0]}
+                      </text>
                     </g>
                   );
                 })
@@ -156,7 +182,7 @@ function RuletaPage() {
             {girando ? 'Girando...' : 'Girar la Ruleta'}
           </button>
 
-          {confirmaciones.length > 0 && (
+          {totalPersonasConCancion > 0 && (
             <button type="button" className="kawaii-back-link" onClick={handleReiniciar}>
               <RotateCcw size={14} /> Reiniciar ruleta
             </button>
@@ -164,6 +190,46 @@ function RuletaPage() {
         </div>
 
       </main>
+
+      {invitadaGirada && !girando && (
+        <div className="kawaii-modal-overlay" onClick={() => setInvitadaGirada(null)}>
+          <div className="kawaii-modal-card kawaii-ruleta-resultado" onClick={(e) => e.stopPropagation()}>
+            <button className="toast-close" onClick={() => setInvitadaGirada(null)}>
+              <X size={18} />
+            </button>
+            <Mic size={26} />
+            <h2>
+              {nombresNovia.has(invitadaGirada.nombre) && <Crown size={16} className="kawaii-crown-badge" />}
+              {invitadaGirada.nombre}
+            </h2>
+            <p className="kawaii-ruleta-artista">
+              {invitadaGirada.canciones.length > 1
+                ? '¿Cuál de sus canciones va a cantar?'
+                : 'Le toca cantar:'}
+            </p>
+
+            <div className="kawaii-ruleta-elegir-lista">
+              {invitadaGirada.canciones.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  className="kawaii-ruleta-elegir-opcion"
+                  onClick={() => handleElegirCancion(c)}
+                >
+                  <Music2 size={16} />
+                  <span className="kawaii-ruleta-elegir-texto">
+                    <span className="kawaii-mi-cancion-titulo">{c.cancion}</span>
+                    {c.artista && c.artista !== 'Artista no especificado' && (
+                      <span className="kawaii-mi-cancion-artista">{c.artista}</span>
+                    )}
+                  </span>
+                  <ChevronRight size={16} />
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {resultado && !girando && (
         <div className="kawaii-modal-overlay" onClick={() => setResultado(null)}>

@@ -8,12 +8,14 @@ import DashboardInvitadas from './pages/DashboardInvitadas';
 import DashboardCanciones from './pages/DashboardCanciones';
 import DashboardMensajes from './pages/DashboardMensajes';
 import RuletaPage from './pages/RuletaPage';
+import MiCancionPage from './pages/MiCancionPage';
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<RegistroPage />} />
       <Route path="/ruleta" element={<RuletaPage />} />
+      <Route path="/mi-cancion" element={<MiCancionPage />} />
       <Route path="/lineup" element={<Layout />}>
         <Route index element={<LineupPage />} />
       </Route>
