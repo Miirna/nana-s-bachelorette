@@ -116,47 +116,49 @@ function DashboardResumen() {
           {invitadas.length === 0 ? (
             <p className="kawaii-empty-msg">Aún no has agregado invitadas.</p>
           ) : (
-            <table className="kawaii-dash-table">
-              <thead>
-                <tr>
-                  <th>Nombre</th>
-                  <th>RSVP</th>
-                  <th>Canciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {invitadas.slice(0, 6).map((inv) => {
-                  const cancionesDeElla = conteoCancionesPorInvitada[inv.nombre] || 0;
-                  return (
-                    <tr key={inv.id}>
-                      <td>
-                        <span className="kawaii-dash-avatar-sm" style={{ background: colorAvatar(inv.nombre) }}>
-                          {inv.nombre.charAt(0).toUpperCase()}
-                        </span>
-                        {inv.esNovia && <Crown size={13} className="kawaii-crown-badge" />}
-                        {inv.nombre}
-                      </td>
-                      <td>
-                        {inv.confirmada ? (
-                          <span className="kawaii-dash-status kawaii-dash-status-ok">✓ Confirmada</span>
-                        ) : inv.declinada ? (
-                          <span className="kawaii-dash-status kawaii-dash-status-no">No asiste</span>
-                        ) : (
-                          <span className="kawaii-dash-status kawaii-dash-status-pending">Pendiente</span>
-                        )}
-                      </td>
-                      <td>
-                        {cancionesDeElla > 0
-                          ? `${cancionesDeElla} agregada${cancionesDeElla > 1 ? 's' : ''}`
-                          : inv.confirmada
-                            ? 'Necesita canción'
-                            : '—'}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            <div className="kawaii-table-scroll">
+              <table className="kawaii-dash-table">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>RSVP</th>
+                    <th>Canciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {invitadas.slice(0, 6).map((inv) => {
+                    const cancionesDeElla = conteoCancionesPorInvitada[inv.nombre] || 0;
+                    return (
+                      <tr key={inv.id}>
+                        <td>
+                          <span className="kawaii-dash-avatar-sm" style={{ background: colorAvatar(inv.nombre) }}>
+                            {inv.nombre.charAt(0).toUpperCase()}
+                          </span>
+                          {inv.esNovia && <Crown size={13} className="kawaii-crown-badge" />}
+                          {inv.nombre}
+                        </td>
+                        <td>
+                          {inv.confirmada ? (
+                            <span className="kawaii-dash-status kawaii-dash-status-ok">✓ Confirmada</span>
+                          ) : inv.declinada ? (
+                            <span className="kawaii-dash-status kawaii-dash-status-no">No asiste</span>
+                          ) : (
+                            <span className="kawaii-dash-status kawaii-dash-status-pending">Pendiente</span>
+                          )}
+                        </td>
+                        <td>
+                          {cancionesDeElla > 0
+                            ? `${cancionesDeElla} agregada${cancionesDeElla > 1 ? 's' : ''}`
+                            : inv.confirmada
+                              ? 'Necesita canción'
+                              : '—'}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>

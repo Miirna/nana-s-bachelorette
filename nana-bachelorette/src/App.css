@@ -2388,8 +2388,15 @@ html, body, #root {
   white-space: nowrap;
 }
 
+.kawaii-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .kawaii-dash-table {
   width: 100%;
+  min-width: 420px;
   border-collapse: collapse;
   font-size: 0.85rem;
 }
@@ -2520,12 +2527,14 @@ html, body, #root {
 .kawaii-dash-table-card {
   background: rgba(255, 255, 255, 0.75);
   border-radius: 20px;
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   box-shadow: 0 8px 24px rgba(185, 130, 200, 0.15);
 }
 
 .kawaii-dash-table-invitadas {
   width: 100%;
+  min-width: 600px;
   border-collapse: collapse;
 }
 
@@ -2541,6 +2550,7 @@ html, body, #root {
   color: #8a6b86;
   padding: 12px 18px;
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .kawaii-dash-table-invitadas td {
@@ -2548,6 +2558,7 @@ html, body, #root {
   border-top: 1px solid rgba(255, 143, 199, 0.1);
   color: #5b3a56;
   font-size: 0.88rem;
+  white-space: nowrap;
 }
 
 .kawaii-dash-td-nombre {
@@ -2761,5 +2772,19 @@ html, body, #root {
 
   .kawaii-dash-stats {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .kawaii-dash-table-invitadas {
+    min-width: 520px;
+  }
+
+  .kawaii-dash-table-invitadas th,
+  .kawaii-dash-table-invitadas td {
+    padding: 10px 12px;
+    font-size: 0.8rem;
+  }
+
+  .kawaii-dash-table {
+    min-width: 360px;
   }
 }
